@@ -68,7 +68,7 @@ func IsClosed(ch <-chan struct{}) bool {
 func main() {
 	zadanie := make(tasks, 0, 10)
 	maxErrors := 4
-	numGourutines := 3
+	numGourutines := 4
 
 	t1 := func() error { fmt.Println("1"); return errors.New("err 1") }
 	t2 := func() error { fmt.Println("2"); return nil }
