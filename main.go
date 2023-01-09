@@ -30,13 +30,13 @@ func sendToRun(task tasks, numGoroutines, maxErrors int) {
 			//fmt.Printf("step-startFrom %v\n", step-startFrom)
 		}
 		wg.Add(step - startFrom)
+		if IsClosed(ch) {
+			fmt.Println("большое количество ошибок")
+			defer wg.Done()
+			return
+		}
 		for i := startFrom; i < step; i++ {
 			go func(i int) {
-				if IsClosed(ch) {
-					fmt.Println("большое количество ошибок")
-					defer wg.Done()
-					return
-				}
 				err := task[i]()
 				if err != nil {
 					errCounter++
@@ -67,8 +67,8 @@ func IsClosed(ch <-chan struct{}) bool {
 
 func main() {
 	tasks := make(tasks, 0, 10)
-	maxErrors := 4
-	numGoroutines := 4
+	maxErrors := 2
+	numGoroutines := 3
 
 	t1 := func() error { fmt.Println("1"); return errors.New("err 1") }
 	t2 := func() error { fmt.Println("2"); return nil }
